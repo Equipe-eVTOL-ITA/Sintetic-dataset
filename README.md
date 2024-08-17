@@ -15,6 +15,7 @@
 
 ## Exemplos de *labels* associadas às imagens
 
-![train_2](https://github.com/user-attachments/assets/8a2a3ea0-d1ce-43c5-bf1d-1baa2dbda4df)
-![train_8](https://github.com/user-attachments/assets/147109ce-2407-4b11-b2df-b9f3eae3fc5a)
-![train_5](https://github.com/user-attachments/assets/2859d676-c6dc-4e97-83c1-7d3f91ed2f26)
+![image](https://github.com/user-attachments/assets/d5bc0048-533c-44c9-9613-65fc1846596f)
+![image](https://github.com/user-attachments/assets/07e5e71e-09c4-428f-8fee-f3b21c6b88fa)
+![image](https://github.com/user-attachments/assets/cb594737-7b88-4c8e-aac2-86034dbc5480)
+![image](https://github.com/user-attachments/assets/3ef14dde-e3fe-4fab-9704-02fb273d20d2)
