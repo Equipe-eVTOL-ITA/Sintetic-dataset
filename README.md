@@ -2,7 +2,7 @@
 
 (Rascunho)
 
-**Arena.blender**: Arena modelada em Blender. Para que os papéis de parede sejam adicionados, os arquivos .png "Fundo", "Parede_1" e "Parede_2" devem estar no mesmo diretório do .blender
+**Arena.blender**: Arena modelada em Blender. Para que os papéis de parede sejam adicionados, os arquivos .png devem estar no mesmo diretório do .blender
 
 **Blender.py**: contém classes (e métodos) úteis à criação do *dataset*, em particular definidas para os sistemas de referência dentre quais as transformadas ocorrem (câmera e imagem).
 
