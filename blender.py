@@ -1,5 +1,5 @@
 from mathutils import Vector, Matrix
-from utils import length
+from utils import length, clamp
 
 class Bounding_box:
     """
@@ -191,7 +191,7 @@ class Image_object:
 
         :param point: point in the world coordinate system
         :type point: mathutils.Vector (Vector (float, float, float))
-        :return: point in the image coordinate system
+        :return: point in the image coordinate system (normalized)
         :rtype: mathutils.Vector (Vector(float, float, float))
         """
 
@@ -203,7 +203,10 @@ class Image_object:
         point_image_coord = self.camera.K @ point_camera_coord
         point_image_coord /= point_image_coord[2]
 
-        point_image_coord[0] = self.camera.x_resolution - point_image_coord[0]
+        point_image_coord[0] = 1 - point_image_coord[0]/self.camera.x_resolution
+        point_image_coord[1] = point_image_coord[1]/self.camera.y_resolution
+        point_image_coord[2] /= self.camera.x_resolution
+        point_image_coord[3] /= self.camera.y_resolution
 
         return point_image_coord
 
@@ -219,12 +222,12 @@ class Image_object:
         image_vetices = [self.to_image_coord(c) for c in vertices_coord]
 
         x_vertices = [v[0] for v in image_vetices]
-        max_x = max(x_vertices)
-        min_x = min(x_vertices)
+        max_x = clamp(max(x_vertices), 0, 1)
+        min_x = clamp(min(x_vertices), 0, 1)
 
         y_vertices = [v[1] for v in image_vetices]
-        max_y = max(y_vertices)
-        min_y = min(y_vertices)
+        max_y = clamp(max(y_vertices), 0, 1)
+        min_y = clamp(min(y_vertices), 0, 1)
 
         self.box.set_box(min_x, min_y, max_x, max_y)
 

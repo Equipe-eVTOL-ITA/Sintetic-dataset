@@ -15,8 +15,8 @@ import blender
 # Setting files params
 
 labels_file_name = 'Labels\\labels'
-set_len = 10000
-evaluate_set_len = 500
+set_len = 1000
+evaluate_set_len = 100
 num_targets = 5
 
 # Getting the scene
@@ -48,8 +48,6 @@ for i in range(set_len):
     cam = blender.Cam(camera, scene)
 
     image_objects = [blender.Image_object(bpy.data.objects['Target_' + str(n + 1)], cam) for n in range(num_targets)]
-
-    # file.write(str(i) + '\n')
 
     for n in range(num_targets):
 
