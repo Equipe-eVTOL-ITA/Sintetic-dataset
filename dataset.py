@@ -47,7 +47,7 @@ for i in range(set_len):
 
     cam = blender.Cam(camera, scene)
 
-    image_objects = [blender.Image_object(bpy.data.objects['Target_' + str(n + 1)], cam) for n in range(num_targets)]
+    image_objects = [blender.Image_object(bpy.data.objects['Base_' + str(n + 1)], cam) for n in range(num_targets)]
 
     for n in range(num_targets):
 

@@ -205,8 +205,6 @@ class Image_object:
 
         point_image_coord[0] = 1 - point_image_coord[0]/self.camera.x_resolution
         point_image_coord[1] = point_image_coord[1]/self.camera.y_resolution
-        point_image_coord[2] /= self.camera.x_resolution
-        point_image_coord[3] /= self.camera.y_resolution
 
         return point_image_coord
 
@@ -239,7 +237,7 @@ class Image_object:
         :rtype: tuple(float, float, float, float)
         """
 
-        if self.box.max_x < 1/2*self.box.width or self.box.min_x > self.camera.x_resolution - 1/2*self.box.width or self.box.max_y < 1/2*self.box.height or self.box.min_y > self.camera.y_resolution - 1/2*self.box.height:
+        if self.box.max_x < 1/2*self.box.width or self.box.min_x > 1 - 1/2*self.box.width or self.box.max_y < 1/2*self.box.height or self.box.min_y > 1 - 1/2*self.box.height:
             return (0.0, 0.0, 0.0, 0.0)
         else:
             return self.box.tuple( )
