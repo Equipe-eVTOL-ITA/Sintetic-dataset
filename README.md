@@ -1,6 +1,6 @@
 # Criação de dataset sintético da arena
 
-(Rascunho)
+(Rascunho. Falta upar nova versão)
 
 **Arena.blender**: Arena modelada em Blender. Para que os papéis de parede sejam adicionados, os arquivos .png devem estar no mesmo diretório do .blender
 
