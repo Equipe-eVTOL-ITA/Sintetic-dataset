@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Base']
+
+roboflow:
+  workspace: evtol-ita-3dksr
+  project: target-ai
+  version: 1
+  license: Public Domain
+  url: https://universe.roboflow.com/evtol-ita-3dksr/target-ai/dataset/1
