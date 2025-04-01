@@ -30,39 +30,37 @@ def show_detection(image, box, color, show_center = True):
     if show_center:
         cv2.circle(image, (int(x), int(y)), CENT_THICNESS, color, -1)
 
-labels_file_name = 'img_'
-images_name = 'img_'
-labels_file_path = 'Labels\\'
-images_file_path = 'dataset\\'
+### Edit here
 
-if not os.path.exists(labels_file_path):
-    raise FileNotFoundError(f"Arquivo não encontrado: {labels_file_path}")
+labels_files_path = 'Campo_labels\\'
+labels_files_name = 'img_'
+images_files_path = 'Campo_images\\'
+images_files_name = 'img_'
 
-num_images = 30
+num_images = 15
 
-labels = [ ]
-images = [cv2.imread(f"{images_file_path}{images_name}{n}.png") for n in range(num_images)]
+### No edit here
+
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "CBR/"))
+labels_files_path = os.path.join(base_path, labels_files_path)
+images_files_path = os.path.join(base_path, images_files_path)
+
+# if not os.path.exists(labels_file_path):
+#     raise FileNotFoundError(f"Arquivo não encontrado: {labels_file_path}")
 
 for i in range(num_images):
-
     boxes = [ ]
 
-    with open(f"{labels_file_path}{labels_file_name}{i}.txt", 'r') as set_file:
+    with open(os.path.join(labels_files_path, f"{labels_files_name}{i}.txt"), 'r') as set_file:
+        for line in set_file:
+            line.strip( )
 
-        line = set_file.readline( ).strip( )
-        
-        box = [ ]
-
-        if line != "":
-            box = [float(f) for f in line.split( )]
-        
-        boxes.append(box)
-
-        line = set_file.readline( )
-
-    labels.append(boxes)
+            if line:
+                box = [float(f) for f in line.split( )]
+                
+                boxes.append(box)
     
-    image = images[i]
+    image = cv2.imread(os.path.join(images_files_path, f"{images_files_name}{i}.png"))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
     for box in boxes:
