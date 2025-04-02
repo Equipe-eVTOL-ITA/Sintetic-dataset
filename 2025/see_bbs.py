@@ -37,7 +37,7 @@ labels_files_name = 'img_'
 images_files_path = 'Campo_images\\'
 images_files_name = 'img_'
 
-num_images = 15
+num_images = 30
 
 ### No edit here
 

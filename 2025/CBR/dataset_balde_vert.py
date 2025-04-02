@@ -3,6 +3,7 @@
 import bpy
 import colorsys
 import numpy as np
+from scipy.stats import norm
 from mathutils import Vector
 import sys
 import os
@@ -12,8 +13,6 @@ if not dir in sys.path:
     sys.path.append(dir)
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 import blender_ap as blender
 from utils import clamp
@@ -49,6 +48,9 @@ origin_center = sum((v.co for v in origin.data.vertices), Vector( ))/len(origin.
 
 r_x = 15/2
 r_y = 2
+r_z = 3
+z_0 = 3.5
+conf = 0.95
 light_scale = 1
 
 # Creating the random dataset to training the CNN
@@ -58,15 +60,12 @@ for i in range(set_len):
     light.data.energy = np.random.uniform(0.3*light_scale, 4*light_scale)
     light.data.color = colorsys.hsv_to_rgb(np.random.uniform(0, 1), np.random.uniform(0, 0.8), 1)
 
-    # np.random.normal(0, r_x/ppf(c))
-
-    camera.location = (origin_center[0] + np.random.uniform(0, 2*r_x), origin_center[1] + np.random.uniform(-r_y, r_y), np.random.uniform(1, 7))
+    camera.location = (origin_center[0] + np.random.uniform(0, 2*r_x), np.random.normal(origin_center[1], r_y/norm.ppf((1 + conf)/2)), np.random.normal(z_0, r_z/norm.ppf((1 + conf)/2)))
     drone.location = camera.location
     camera.rotation_euler = (np.random.uniform(-np.pi/24, np.pi/24), np.random.uniform(-np.pi/24, np.pi/24), np.random.uniform(-np.pi, np.pi))
     drone.rotation_euler = camera.rotation_euler
     camera.data.lens = np.random.random_integers(4, 9)
 
-    # scene.render.filepath = f"//{images_files_path}{images_files_name}{i}.png"
     scene.render.filepath = os.path.join(images_files_path, f"{images_files_name}{i}.png")
 
     bpy.ops.render.render(write_still = True)
