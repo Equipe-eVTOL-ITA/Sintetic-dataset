@@ -37,16 +37,13 @@ labels_files_name = 'img_'
 images_files_path = 'Campo_images\\'
 images_files_name = 'img_'
 
-num_images = 30
+num_images = 5
 
 ### No edit here
 
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "CBR/"))
 labels_files_path = os.path.join(base_path, labels_files_path)
 images_files_path = os.path.join(base_path, images_files_path)
-
-# if not os.path.exists(labels_file_path):
-#     raise FileNotFoundError(f"Arquivo não encontrado: {labels_file_path}")
 
 for i in range(num_images):
     boxes = [ ]

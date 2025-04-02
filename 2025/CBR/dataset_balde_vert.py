@@ -45,11 +45,12 @@ baldes = [bpy.data.objects[str(i + 1)] for i in range(3)]
 tampos = [bpy.data.objects['T' + str(i + 1)] for i in range(3)]
 
 origin_center = sum((v.co for v in origin.data.vertices), Vector( ))/len(origin.data.vertices)/100
+baldes_centers = [sum((v.co for v in balde.data.vertices), Vector( ))/len(balde.data.vertices)/100 for balde in baldes]
 
-r_x = 15/2
-r_y = 2
+r_x = 4.5
+r_y = 1.25
 r_z = 3
-z_0 = 3.5
+z_0 = 3
 conf = 0.95
 light_scale = 1
 
@@ -60,9 +61,14 @@ for i in range(set_len):
     light.data.energy = np.random.uniform(0.3*light_scale, 4*light_scale)
     light.data.color = colorsys.hsv_to_rgb(np.random.uniform(0, 1), np.random.uniform(0, 0.8), 1)
 
-    camera.location = (origin_center[0] + np.random.uniform(0, 2*r_x), np.random.normal(origin_center[1], r_y/norm.ppf((1 + conf)/2)), np.random.normal(z_0, r_z/norm.ppf((1 + conf)/2)))
+    camera.location = (origin_center[0] + np.random.uniform(1.5, 2*r_x), np.random.normal(origin_center[1], r_y/norm.ppf((1 + conf)/2)), np.random.normal(z_0, r_z/norm.ppf((1 + conf)/2)))
     drone.location = camera.location
-    camera.rotation_euler = (np.random.uniform(-np.pi/24, np.pi/24), np.random.uniform(-np.pi/24, np.pi/24), np.random.uniform(-np.pi, np.pi))
+
+    vec = Vector((0, -camera.location[1], -camera.location[2]))
+
+    dtheta_y = -np.pi - np.arctan2(vec[1], vec[2])
+
+    camera.rotation_euler = (clamp(dtheta_y, -np.pi/24, np.pi/24), np.random.uniform(-np.pi/24, np.pi/24), np.random.uniform(-np.pi, np.pi))
     drone.rotation_euler = camera.rotation_euler
     camera.data.lens = np.random.random_integers(4, 9)
 
