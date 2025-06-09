@@ -1,0 +1,33 @@
+Bounding_box
+    -> centro x
+    -> centro y
+    -> width
+    -> height
+
+
+    --> set_max_min
+        funcao que cria os atributos de x,y maximo e minimos
+
+
+
+MUDANCAS:
+* alterar o nome da classe de Bounding_box para BoundingBox
+* criar uma classe do tipo Point com atributos x e y
+* centro x e centro y viram um objeto centro do tipo Point
+* excluir o método set_max_min
+* criar um property para superior_esquerdo do tipo Point que retorna um valor que sempre é calculado (tal como está no método set_max_min) e fazer o mesmo para o inferior_direito
+* transformar o tuple em um dunder method que retorne (superior_esquerdo do tipo Point, inferior_direito do tipo Point)
+* excluir os métodos set_box e pos
+
+-----------------------------------------------
+
+Excluir o arquivo utils.py
+
+-----------------------------------------------
+
+Criar arquvio conf.py que vai guardar todas as informacoes de configuracao do blender
+
+-> pastas
+-> padrao de nome de objetos
+-> quais objetos podem estar na imagem
+-> quantas imagens gerar
