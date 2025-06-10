@@ -1,5 +1,8 @@
 from mathutils import Vector, Matrix
-from utils import length
+
+def clamp(x, minimum, maximum):
+
+    return max(minimum, min(x, maximum))
 
 class Point:
     def __init__(self, x=None, y=None):
@@ -30,7 +33,7 @@ class BoundingBox:
         return Point(None, None)
 
     def __tuple__(self):
-        return (self.superior_esquerdo, self.inferior_direito)
+        return (self.centro.x, self.centro.y, self.width, self.height)
 
     def set_box_from_extremes(self, min_x, min_y, max_x, max_y) -> None:
         """
@@ -48,16 +51,17 @@ class BoundingBox:
         """
         if self.width is None or self.height is None or self.centro.x is None or self.centro.y is None:
             return False
-        min_x = self.centro.x - self.width / 2.0
-        max_x = self.centro.x + self.width / 2.0
-        min_y = self.centro.y - self.height / 2.0
-        max_y = self.centro.y + self.height / 2.0
-        # Permite que a bbox esteja fora até r*width/height
+
+        min_x = self.superior_esquerdo.x
+        max_x = self.inferior_direito.x
+        min_y = self.superior_esquerdo.y
+        max_y = self.inferior_direito.y
+
         return (
-            max_x > -r * self.width and
-            min_x < reso_x + r * self.width and
-            max_y > -r * self.height and
-            min_y < reso_y + r * self.height
+            max_x > r * self.width and
+            min_x < reso_x - r * self.width and
+            max_y > r * self.height and
+            min_y < reso_y - r * self.height
         )
     
 
@@ -175,7 +179,7 @@ class Image_object:
 
         return point_image_coord
 
-    def set_bounding_box(self):
+    def set_bounding_box(self) -> None:
         """
         Sets the bounding box around the object in the image
         """
@@ -196,7 +200,7 @@ class Image_object:
 
         self.box.set_box_from_extremes(min_x, min_y, max_x, max_y)
 
-    def get_bounding_box(self, center = True):
+    def get_bounding_box(self) -> tuple:
         """
         Returns the bounding box tuple of the object in the image
 
@@ -204,9 +208,7 @@ class Image_object:
         :rtype: tuple(float, float, float, float)
         """
 
-        if self.box.max_x < 1/5*self.box.width or self.box.min_x > 1 - 1/5*self.box.width or self.box.max_y < 1/5*self.box.height or self.box.min_y > 1 - 1/5*self.box.height:
-            return (0.0, 0.0, 0.0, 0.0)
-        elif center == True:
-            return self.box.tuple()
-        else:
-            return self.box.pos()
+        if self.box.is_minimally_inside():
+            return tuple(self.box)
+        
+        return None
