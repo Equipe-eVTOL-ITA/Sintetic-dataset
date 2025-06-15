@@ -47,7 +47,7 @@ for tipo in conf.PLATAFORMA_TYPES:
     i = 0
     while True:
         try:
-            name = f"{conf.PLATAFORMA_PREFIX}{tipo}.{i}"
+            name = f"{conf.PLATAFORMA_PREFIX}{tipo}.{i:03d}"
             plataformas.append(bpy.data.objects[name])
             print(f"{name} adicionado à lista!")
             i+=1

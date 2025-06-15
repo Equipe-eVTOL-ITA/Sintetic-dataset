@@ -11,7 +11,7 @@ LIGHT_NAME = "Light"
 CAMERA_NAME = "Camera"
 DRONE_NAME = "Drone"
 ORIGIN_NAME = "Origin"
-PLATAFORMA_PREFIX = "Plat"
+PLATAFORMA_PREFIX = "Plat_"
 PLATAFORMA_TYPES = ("Casa", "Triangulo", "Quadrado", "Circulo", "Hexagono", "Pentagono", "Estrela", "Cruz")
 
 # Constantes sobre os parâmetros randômicos
