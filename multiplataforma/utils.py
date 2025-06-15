@@ -32,8 +32,11 @@ class BoundingBox:
             return Point(self.centro.x + self.width/2.0, self.centro.y + self.height/2.0)
         return Point(None, None)
 
-    def __tuple__(self):
-        return (self.centro.x, self.centro.y, self.width, self.height)
+    def __iter__(self):
+        yield self.centro.x
+        yield self.centro.y
+        yield self.width
+        yield self.height
 
     def set_box_from_extremes(self, min_x, min_y, max_x, max_y) -> None:
         """
@@ -58,10 +61,11 @@ class BoundingBox:
         max_y = self.inferior_direito.y
 
         return (
+            # obs: todos os valores estao em porcentagens para os seus respectivos eixos coordenados
             max_x > r * self.width and
-            min_x < reso_x - r * self.width and
+            min_x < 1 - r * self.width and
             max_y > r * self.height and
-            min_y < reso_y - r * self.height
+            min_y < 1 - r * self.height
         )
     
 
@@ -81,6 +85,9 @@ class Cam():
         """
         self.camera = camera
         self.scene = scene
+
+        scene.render.resolution_x = 800
+        scene.render.resolution_y = 800
 
         self.x_resolution = scene.render.resolution_x
         self.y_resolution = scene.render.resolution_y
@@ -208,7 +215,7 @@ class Image_object:
         :rtype: tuple(float, float, float, float)
         """
 
-        if self.box.is_minimally_inside():
+        if self.box.is_minimally_inside(0.7, self.camera.x_resolution, self.camera.y_resolution):
             return tuple(self.box)
         
         return None

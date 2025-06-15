@@ -5,8 +5,6 @@ from scipy.stats import norm
 from mathutils import Vector
 import sys
 import os
-import utils
-import conf
 
 diretorio = os.path.dirname(bpy.data.filepath)
 
@@ -14,6 +12,14 @@ diretorio = os.path.dirname(bpy.data.filepath)
 if not diretorio in sys.path:
     sys.path.append(diretorio)
 
+import utils
+import conf
+
+os.makedirs(conf.DIR_IMAGENS, exist_ok=True)
+os.makedirs(conf.DIR_LABELS, exist_ok=True)
+
+labels_path = os.path.join(diretorio, conf.DIR_LABELS)
+imagens_path = os.path.join(diretorio, conf.DIR_IMAGENS)
 
 # Classe para representar o Drone e a câmera em um só objeto
 class Drone:
@@ -31,10 +37,11 @@ class Drone:
         )
     
     def rotate(self, alpha:float, beta:float, gama:float) -> None:
-        self.camera_obj.rotation = (alpha, beta, gama)
-        self.drone_obj.rotation = self.camera_obj.rotation
+        self.camera_obj.rotation_euler = (alpha, beta, gama)
+        self.drone_obj.rotation_euler = self.camera_obj.rotation_euler
 
 # Obtendo os objetos da cena
+print("Obtendo os objetos da cena")
 scene = bpy.context.scene
 light = bpy.data.objects[conf.LIGHT_NAME]
 origin = bpy.data.objects[conf.ORIGIN_NAME]
@@ -44,7 +51,7 @@ drone = Drone(bpy.data.objects[conf.DRONE_NAME], camera)
 
 plataformas = []
 for tipo in conf.PLATAFORMA_TYPES:
-    i = 0
+    i = 1
     while True:
         try:
             name = f"{conf.PLATAFORMA_PREFIX}{tipo}.{i:03d}"
@@ -52,8 +59,9 @@ for tipo in conf.PLATAFORMA_TYPES:
             print(f"{name} adicionado à lista!")
             i+=1
         except:
-            continue
+            break
 
+print("Iniciando as rodadas de fotos...")
 for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
     light.data.energy = np.random.uniform(conf.MIN_LIGHT_SCALE, conf.MAX_LIGHT_SCALE)
     light.data.color = colorsys.hsv_to_rgb(*[np.random.uniform(*conf.HSV_RAND_INTERVAL[i]) for i in range(3)])
@@ -74,12 +82,12 @@ for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
 
     camera.data.lens = np.random.random_integers(*conf.CAMERA_LENS_RAND)
 
-    scene.render.filepath = os.path.join(conf.DIR_IMAGENS, f"{conf.NAME_PREFIX}{rodada_de_foto}.png")
+    scene.render.filepath = os.path.join(imagens_path, f"{conf.NAME_PREFIX}{rodada_de_foto}.png")
     bpy.ops.render.render(write_still = True)
 
     cam = utils.Cam(camera, scene)
 
-    with open(os.path.join(conf.DIR_LABELS, f"{conf.NAME_PREFIX}{rodada_de_foto}.txt"), 'a') as file:
+    with open(os.path.join(labels_path, f"{conf.NAME_PREFIX}{rodada_de_foto}.txt"), 'w') as file:
         for plataforma in plataformas:
             plat = utils.Image_object(plataforma, cam) # criando um objeto que sera utilizado para julgar se o objeto esta, ou nao, dentro da imagem
             plat.set_bounding_box()
@@ -89,4 +97,4 @@ for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
                 continue
 
             if bbox_plat[2] != .0 and bbox_plat[3] != .0:
-                file.write(f"{plataforma["id"]} {bbox_plat[0]} {bbox_plat[1]} {bbox_plat[2]} {bbox_plat[3]}")
+                file.write(f"{plataforma['id']} {bbox_plat[0]} {bbox_plat[1]} {bbox_plat[2]} {bbox_plat[3]}\n")
