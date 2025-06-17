@@ -28,12 +28,12 @@ class Drone:
         self.camera_obj = camera_obj
     
     def move(self, x:float, y:float, z:float) -> None:
-        self.camera_obj.location = (x, y, z)
+        self.camera_obj.location = (x, y, z+0.1)
         delta = conf.DRONE_RAND_POS_FROM_CAMERA
         self.drone_obj.location = (
             x+np.random.uniform(-delta, delta),
             y+np.random.uniform(-delta, delta),
-            z
+            z+conf.DELTA_Z_FROM_CAMERA_TO_DRONE
         )
     
     def rotate(self, alpha:float, beta:float, gama:float) -> None:
@@ -52,6 +52,13 @@ drone = Drone(bpy.data.objects[conf.DRONE_NAME], camera)
 plataformas = []
 for tipo in conf.PLATAFORMA_TYPES:
     i = 1
+    print(f"Procurando objetos do tipo {tipo}...")
+    try:
+        name = f"{conf.PLATAFORMA_PREFIX}{tipo}"
+        plataformas.append(bpy.data.objects[name])
+        print(f"{name} adicionado à lista!")
+    except:
+        print("Nenhum objeto do tipo", tipo, "sem numeracao encontrado...")
     while True:
         try:
             name = f"{conf.PLATAFORMA_PREFIX}{tipo}.{i:03d}"
@@ -59,6 +66,7 @@ for tipo in conf.PLATAFORMA_TYPES:
             print(f"{name} adicionado à lista!")
             i+=1
         except:
+            print("Parando por aqui...")
             break
 
 print("Iniciando as rodadas de fotos...")
@@ -75,11 +83,11 @@ for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
     vec = Vector((0, -camera.location[1], -camera.location[2]))
     dtheta_y = -np.pi - np.arctan2(vec[1], vec[2])
     drone.rotate(
-        utils.clamp(dtheta_y, -np.pi/24, np.pi/24),
-        np.random.uniform(-np.pi/24, np.pi/24),
-        np.random.uniform(-np.pi, np.pi)
+        utils.clamp(dtheta_y, -conf.ANGLE_LIMIT, conf.ANGLE_LIMIT),
+        np.random.uniform(-conf.ANGLE_LIMIT, conf.ANGLE_LIMIT),
+        np.random.uniform(-conf.ANGLE_LIMIT, conf.ANGLE_LIMIT)
     )
-
+    
     camera.data.lens = np.random.random_integers(*conf.CAMERA_LENS_RAND)
 
     scene.render.filepath = os.path.join(imagens_path, f"{conf.NAME_PREFIX}{rodada_de_foto}.png")
