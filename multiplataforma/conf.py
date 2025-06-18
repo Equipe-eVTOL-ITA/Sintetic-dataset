@@ -1,8 +1,11 @@
 from numpy import pi
 
+START_INDEX = 4345
+
 # Constantes sobre os arquivos
 DIR_IMAGENS = "imagens/"
 DIR_LABELS = "labels/"
+DIR_CHAO_ASSETS = "assets/ChaoAssets2/"
 NAME_PREFIX = "img_"
 
 # Constante sobre o treino
@@ -13,6 +16,7 @@ LIGHT_NAME = "Light"
 CAMERA_NAME = "Camera"
 DRONE_NAME = "Drone"
 ORIGIN_NAME = "Origin"
+MATERIAL_CHAO_NAME = "Grama"
 PLATAFORMA_PREFIX = "Plat_"
 PLATAFORMA_TYPES = ("Casa", "Triangulo", "Quadrado", "Circulo", "Hexagono", "Pentagono", "Estrela", "Cruz")
 

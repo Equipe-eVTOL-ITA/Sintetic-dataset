@@ -5,6 +5,7 @@ from scipy.stats import norm
 from mathutils import Vector
 import sys
 import os
+import time
 
 diretorio = os.path.dirname(bpy.data.filepath)
 
@@ -20,6 +21,41 @@ os.makedirs(conf.DIR_LABELS, exist_ok=True)
 
 labels_path = os.path.join(diretorio, conf.DIR_LABELS)
 imagens_path = os.path.join(diretorio, conf.DIR_IMAGENS)
+chao_assets = os.path.join(diretorio, conf.DIR_CHAO_ASSETS)
+
+# Obtendo a lista de arquivos de imagens para o chao
+imagens_chao = [f for f in os.listdir(chao_assets) if f.endswith('.jpg') or f.endswith('.png') or f.endswith('.jpeg')]
+print(f"Imagens de chão encontradas: {len(imagens_chao)}")
+
+# Funcao para alterar a textura do material do chao
+def alterar_textura_material(material, new_image_path=None):
+    nodes = material.node_tree.nodes
+    image_texture_node = None
+
+    # Tenta encontrar um nó de textura de imagem existente
+    for node in nodes:
+        if node.type == 'TEX_IMAGE':
+            image_texture_node = node
+            break
+    
+    if image_texture_node is None: # Se ainda assim não conseguiu o nó
+        print(f"Erro: Não foi possível obter ou criar um nó 'Image Texture' para o material '{material.name}'.")
+        return False
+
+    if not os.path.exists(new_image_path):
+        print(f"Erro: Arquivo de imagem não encontrado em: {new_image_path}")
+        return False
+
+    try:
+        new_image = bpy.data.images.load(new_image_path)
+    except RuntimeError as e:
+        print(f"Erro ao carregar a imagem '{new_image_path}': {e}")
+        print("Verifique se o caminho está correto e se o arquivo é uma imagem válida.")
+        return False
+
+    image_texture_node.image = new_image
+    print(f"Material '{material.name}' atualizado com a imagem: {new_image.name}")
+    return True
 
 # Classe para representar o Drone e a câmera em um só objeto
 class Drone:
@@ -46,7 +82,7 @@ scene = bpy.context.scene
 light = bpy.data.objects[conf.LIGHT_NAME]
 origin = bpy.data.objects[conf.ORIGIN_NAME]
 camera = bpy.data.objects[conf.CAMERA_NAME]
-
+material_chao = bpy.data.materials.get(conf.MATERIAL_CHAO_NAME)
 drone = Drone(bpy.data.objects[conf.DRONE_NAME], camera)
 
 plataformas = []
@@ -71,6 +107,8 @@ for tipo in conf.PLATAFORMA_TYPES:
 
 print("Iniciando as rodadas de fotos...")
 for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
+    time.sleep(0.3)  # Espera um pouco para evitar problemas de travamento
+    alterar_textura_material(material=material_chao, new_image_path=os.path.join(chao_assets, np.random.choice(imagens_chao)))
     light.data.energy = np.random.uniform(conf.MIN_LIGHT_SCALE, conf.MAX_LIGHT_SCALE)
     light.data.color = colorsys.hsv_to_rgb(*[np.random.uniform(*conf.HSV_RAND_INTERVAL[i]) for i in range(3)])
 
@@ -90,12 +128,12 @@ for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
     
     camera.data.lens = np.random.random_integers(*conf.CAMERA_LENS_RAND)
 
-    scene.render.filepath = os.path.join(imagens_path, f"{conf.NAME_PREFIX}{rodada_de_foto}.png")
+    scene.render.filepath = os.path.join(imagens_path, f"{conf.NAME_PREFIX}{rodada_de_foto+conf.START_INDEX}.png")
     bpy.ops.render.render(write_still = True)
 
     cam = utils.Cam(camera, scene)
 
-    with open(os.path.join(labels_path, f"{conf.NAME_PREFIX}{rodada_de_foto}.txt"), 'w') as file:
+    with open(os.path.join(labels_path, f"{conf.NAME_PREFIX}{rodada_de_foto+conf.START_INDEX}.txt"), 'w') as file:
         for plataforma in plataformas:
             plat = utils.Image_object(plataforma, cam) # criando um objeto que sera utilizado para julgar se o objeto esta, ou nao, dentro da imagem
             plat.set_bounding_box()
