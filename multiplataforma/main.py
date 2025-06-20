@@ -17,9 +17,8 @@ import utils
 import conf
 
 os.makedirs(conf.DIR_IMAGENS, exist_ok=True)
-os.makedirs(conf.DIR_LABELS, exist_ok=True)
 
-labels_path = os.path.join(diretorio, conf.DIR_LABELS)
+labels_path = os.path.join(diretorio, conf.DIR_IMAGENS)
 imagens_path = os.path.join(diretorio, conf.DIR_IMAGENS)
 chao_assets = os.path.join(diretorio, conf.DIR_CHAO_ASSETS)
 
@@ -112,9 +111,12 @@ for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
     light.data.energy = np.random.uniform(conf.MIN_LIGHT_SCALE, conf.MAX_LIGHT_SCALE)
     light.data.color = colorsys.hsv_to_rgb(*[np.random.uniform(*conf.HSV_RAND_INTERVAL[i]) for i in range(3)])
 
+    quadrante_index = np.random.choice(conf.N_QUADRANTES)
+    quadrante = conf.QUADRANTES[quadrante_index]
+
     drone.move(
-        np.random.uniform(*conf.RADIUS_VECTOR_CAMERA_INTERVAL[0]),
-        np.random.uniform(*conf.RADIUS_VECTOR_CAMERA_INTERVAL[1]),
+        quadrante[0]+np.random.uniform(*conf.RADIUS_VECTOR_CAMERA_INTERVAL[0]),
+        quadrante[1]+np.random.uniform(*conf.RADIUS_VECTOR_CAMERA_INTERVAL[1]),
         np.random.normal(conf.Z0_FOR_CAMERA_SURROUND, conf.RADIUS_Z/norm.ppf((1+conf.CONFIDENCE_NORMAL_DISTRIBUTION_FOR_Z)/2))
     )
 

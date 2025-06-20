@@ -1,4 +1,5 @@
 from mathutils import Vector, Matrix
+from conf import RATIO_OUTSIDE_IMAGE, SIZABLE_BBX
 
 def clamp(x, minimum, maximum):
 
@@ -67,7 +68,13 @@ class BoundingBox:
             max_y > r * self.height and
             min_y < 1 - r * self.height
         )
-    
+
+    def is_minimally_sizable(self) -> bool:
+        """
+        Retorna True se a bounding box tiver tamanho minimamente aceitável.
+        """
+        return self.width is not None and self.height is not None and self.width > SIZABLE_BBX and self.height > SIZABLE_BBX
+
 
 class Cam():
     """
@@ -215,7 +222,8 @@ class Image_object:
         :rtype: tuple(float, float, float, float)
         """
 
-        if self.box.is_minimally_inside(0.7, self.camera.x_resolution, self.camera.y_resolution):
-            return tuple(self.box)
+        if self.box.is_minimally_inside(RATIO_OUTSIDE_IMAGE, self.camera.x_resolution, self.camera.y_resolution):
+            if self.box.is_minimally_sizable():
+                return tuple(self.box)
         
         return None
