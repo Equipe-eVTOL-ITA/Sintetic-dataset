@@ -106,8 +106,11 @@ for tipo in conf.PLATAFORMA_TYPES:
 
 print("Iniciando as rodadas de fotos...")
 for rodada_de_foto in range(conf.NUMERO_DE_IMAGENS):
+    print(f"Rodada atual: {rodada_de_foto}/{conf.NUMERO_DE_IMAGENS-1}")
+    if rodada_de_foto % 10 == 0:
+        print("Alterando textura do chão... Rodada:", rodada_de_foto)
+        alterar_textura_material(material=material_chao, new_image_path=os.path.join(chao_assets, np.random.choice(imagens_chao)))
     time.sleep(0.3)  # Espera um pouco para evitar problemas de travamento
-    alterar_textura_material(material=material_chao, new_image_path=os.path.join(chao_assets, np.random.choice(imagens_chao)))
     light.data.energy = np.random.uniform(conf.MIN_LIGHT_SCALE, conf.MAX_LIGHT_SCALE)
     light.data.color = colorsys.hsv_to_rgb(*[np.random.uniform(*conf.HSV_RAND_INTERVAL[i]) for i in range(3)])
 

@@ -2,7 +2,7 @@ from numpy import pi
 import os
 
 # Constante sobre o treino
-NUMERO_DE_IMAGENS = 20
+NUMERO_DE_IMAGENS = 50
 
 # Constantes sobre os objetos
 LIGHT_NAME = "Light"
@@ -106,5 +106,5 @@ DIR_CHAO_ASSETS = "assets/ChaoAssets3/"
 NAME_PREFIX = "img_"
 
 # Constantes para o utils
-RATIO_OUTSIDE_IMAGE = 0.3
+RATIO_OUTSIDE_IMAGE = 0.6
 SIZABLE_BBX = 0.1
